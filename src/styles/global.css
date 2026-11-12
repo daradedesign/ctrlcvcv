@@ -1,0 +1,5 @@
+html { overflow-y: auto; }
+code { font-size: 0.75rem; }
+
+/* Compact title rows for every collapsible panel in the side panel. */
+.v-expansion-panel-title { min-height: 40px !important; }

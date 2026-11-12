@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 218 68" role="img" aria-label="CtrlCVCV">
+  <title>CtrlCVCV</title>
+  <!-- Flat outline style: every shape is a 3px indigo stroke whose outer edge spans y 8–61 -->
+  <g fill="none" stroke="#3F51B5" stroke-width="3" stroke-linejoin="round">
+    <rect x="5.5" y="9.5" width="61" height="50" rx="4"/>
+    <rect x="74.5" y="9.5" width="41" height="50" rx="4"/>
+    <rect x="123.5" y="9.5" width="41" height="50" rx="4"/>
+    <path d="M172.5 13.5a4 4 0 0 1 4-4h21l15 15v31a4 4 0 0 1-4 4h-32a4 4 0 0 1-4-4z"/>
+    <path d="M197.5 9.5v11a4 4 0 0 0 4 4h11" fill="#C5CAE9"/>
+  </g>
+  <g font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="700" text-anchor="middle" fill="#3F51B5">
+    <text x="36" y="41.5" font-size="20">CTRL</text>
+    <text x="95" y="47" font-size="36">C</text>
+    <text x="144" y="47" font-size="36">V</text>
+    <text x="192.5" y="40" font-size="20">CV</text>
+  </g>
+  <path d="M182 47.5h21M182 53.5h13" stroke="#9FA8DA" stroke-width="3" stroke-linecap="round"/>
+</svg>
