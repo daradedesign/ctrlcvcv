@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample job application · CtrlCVCV test page</title>
+<!--
+  A practice job application for trying out the CtrlCVCV side panel.
+  Plain HTML, CSS and JavaScript: open the file directly in Chrome, no server or build needed.
+  Nothing is sent anywhere; Submit only checks the answers on this page.
+  Fields deliberately ask for different formats (phone, salary, dates) so you can
+  practise picking the right format from the panel.
+-->
+<style>
+  :root {
+    --primary: #3f51b5;
+    --primary-soft: #e8eaf6;
+    --text: #1f2330;
+    --muted: #5f6475;
+    --border: #cfd3df;
+    --error: #c62828;
+    --ok: #2e7d32;
+    --bg: #f5f6fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 15px/1.5 "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+  }
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 24px 16px;
+  }
+  header .inner, main { max-width: 760px; margin: 0 auto; }
+  header h1 { margin: 0 0 4px; font-size: 1.5rem; }
+  header p { margin: 0; opacity: 0.85; }
+  main { padding: 16px; }
+  .notice {
+    background: var(--primary-soft);
+    border-left: 4px solid var(--primary);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  fieldset {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 0 0 16px;
+  }
+  legend {
+    font-weight: 600;
+    padding: 0 6px;
+    color: var(--primary);
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 16px; }
+  .full { grid-column: 1 / -1; }
+  label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+  /* Labels fill the spare height so inputs in the same row line up even when hints differ. */
+  .grid > div { display: flex; flex-direction: column; }
+  .grid > div > label { flex-grow: 1; }
+  .required::after { content: " *"; color: var(--error); }
+  .hint { display: block; font-weight: 400; color: var(--muted); font-size: 0.8rem; }
+  input, select, textarea {
+    width: 100%;
+    font: inherit;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+    color: inherit;
+  }
+  textarea { min-height: 180px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset: -1px; border-color: var(--primary); }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  .row > .narrow { flex: 0 0 90px; }
+  .radios { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .radios label { display: inline-flex; align-items: center; gap: 6px; font-weight: 400; margin: 0; }
+  .radios input { width: auto; }
+  .error { display: none; color: var(--error); font-size: 0.8rem; margin-top: 4px; }
+  .invalid input, .invalid select, .invalid textarea { border-color: var(--error); }
+  .invalid .error { display: block; }
+  .counter { color: var(--muted); font-size: 0.8rem; text-align: right; }
+  .counter.over { color: var(--error); }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; }
+  button {
+    font: inherit;
+    padding: 10px 18px;
+    border-radius: 4px;
+    border: 1px solid var(--primary);
+    cursor: pointer;
+  }
+  button.primary { background: var(--primary); color: #fff; }
+  button.secondary { background: #fff; color: var(--primary); }
+  #result { display: none; }
+  #result.show { display: block; }
+  #result table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  #result th, #result td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  #result th { width: 40%; color: var(--muted); font-weight: 600; }
+  #result td { white-space: pre-wrap; word-break: break-word; }
+  .badge { font-weight: 600; }
+  .badge.ok { color: var(--ok); }
+  .badge.bad { color: var(--error); }
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <h1>Senior Front-End Developer</h1>
+    <p>Example Company Inc. · Remote · Sample application form</p>
+  </div>
+</header>
+
+<main>
+  <p class="notice">
+    This is a <strong>practice form</strong> for the CtrlCVCV extension. Open the side panel and copy each
+    value in. Several fields ask for a specific format, so choose the matching one from the panel's list.
+    Nothing leaves this page.
+  </p>
+
+  <form id="application" novalidate>
+    <fieldset>
+      <legend>Profiles and links</legend>
+      <div class="grid">
+        <div class="full">
+          <label for="linkedin"><span class="required">LinkedIn profile URL</span></label>
+          <input id="linkedin" name="LinkedIn profile URL" type="url" required
+                 pattern="https?://(www\.)?linkedin\.com/.+" placeholder="https://www.linkedin.com/in/…" />
+          <span class="error">Enter a full linkedin.com address.</span>
+        </div>
+        <div>
+          <label for="github">GitHub profile URL</label>
+          <input id="github" name="GitHub profile URL" type="url"
+                 pattern="https?://(www\.)?github\.com/[^/]+/?" placeholder="https://github.com/…" />
+          <span class="error">Enter a github.com profile address.</span>
+        </div>
+        <div>
+          <label for="repo">Repository you're proud of</label>
+          <input id="repo" name="GitHub repository URL" type="url"
+                 pattern="https?://(www\.)?github\.com/[^/]+/[^/]+.*" placeholder="https://github.com/user/repo" />
+          <span class="error">Enter a github.com repository address.</span>
+        </div>
+        <div class="full">
+          <label for="portfolio">Portfolio or personal website</label>
+          <input id="portfolio" name="Portfolio" type="url" placeholder="https://" />
+          <span class="error">Enter a full web address starting with http:// or https://.</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Phone</legend>
+      <div class="grid">
+        <div>
+          <label for="phone-us"><span class="required">Mobile phone</span>
+            <span class="hint">Format: (555) 555-5555</span>
+          </label>
+          <input id="phone-us" name="Mobile phone" type="tel" required
+                 pattern="\(\d{3}\) \d{3}-\d{4}( ext\. \d+)?" placeholder="(555) 555-5555" />
+          <span class="error">Use the format (555) 555-5555.</span>
+        </div>
+        <div>
+          <label for="phone-intl">Phone (international)
+            <span class="hint">E.164: + and digits only</span>
+          </label>
+          <input id="phone-intl" name="Phone (international)" type="tel"
+                 pattern="\+\d{8,15}" placeholder="+15555555555" />
+          <span class="error">Use + followed by digits only, e.g. +15555555555.</span>
+        </div>
+        <div class="full">
+          <label for="phone-number">Phone number, split by country code
+            <span class="hint">Digits only in the number box</span>
+          </label>
+          <div class="row">
+            <select id="phone-country" name="Country code" class="narrow" aria-label="Country code">
+              <option value="">Code</option>
+              <option value="+1">+1</option>
+              <option value="+44">+44</option>
+              <option value="+61">+61</option>
+              <option value="+91">+91</option>
+            </select>
+            <input id="phone-number" name="Phone number (digits)" type="tel" inputmode="numeric"
+                   pattern="\d{6,14}" placeholder="5555555555" />
+          </div>
+          <span class="error">Digits only, no spaces or dashes.</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Compensation</legend>
+      <div class="grid">
+        <div>
+          <label for="salary-number"><span class="required">Desired annual salary (USD)</span>
+            <span class="hint">Whole number, no symbols</span>
+          </label>
+          <input id="salary-number" name="Desired salary" type="text" inputmode="numeric" required
+                 pattern="\d{4,9}" placeholder="120000" />
+          <span class="error">Numbers only, e.g. 120000.</span>
+        </div>
+        <div>
+          <label for="salary-range">Salary range
+            <span class="hint">e.g. $110,000 - $130,000</span>
+          </label>
+          <input id="salary-range" name="Salary range" type="text" placeholder="$110,000 - $130,000" />
+        </div>
+        <div>
+          <label for="hourly">Expected hourly rate (contract)
+            <span class="hint">Decimal number</span>
+          </label>
+          <input id="hourly" name="Hourly rate" type="text" inputmode="decimal"
+                 pattern="\$?\d+(\.\d{1,2})?" placeholder="57.69" />
+          <span class="error">A number such as 57.69.</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Dates</legend>
+      <div class="grid">
+        <div>
+          <label for="start-date"><span class="required">Earliest start date</span>
+            <span class="hint">MM/DD/YYYY</span>
+          </label>
+          <input id="start-date" name="Start date" type="text" required
+                 pattern="(0[1-9]|1[0-2])/(0[1-9]|[12]\d|3[01])/\d{4}" placeholder="MM/DD/YYYY" />
+          <span class="error">Use MM/DD/YYYY, e.g. 01/15/2027.</span>
+        </div>
+        <div>
+          <label for="available">Date available (date picker)
+            <span class="hint">Pick a date; most date pickers ignore pasted text</span>
+          </label>
+          <input id="available" name="Date available" type="date" />
+        </div>
+        <div>
+          <label for="graduation">Graduation date
+            <span class="hint">MM/YYYY</span>
+          </label>
+          <input id="graduation" name="Graduation date" type="text"
+                 pattern="(0[1-9]|1[0-2])/\d{4}" placeholder="MM/YYYY" />
+          <span class="error">Use MM/YYYY, e.g. 05/2020.</span>
+        </div>
+        <div>
+          <label for="signature-date"><span class="required">Today's date (signature)</span>
+            <span class="hint">Month D, YYYY</span>
+          </label>
+          <input id="signature-date" name="Signature date" type="text" required
+                 pattern="(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}"
+                 placeholder="January 1, 2027" />
+          <span class="error">Write the date as Month D, YYYY.</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Cover letter and questions</legend>
+      <div class="grid">
+        <div class="full">
+          <label for="cover-letter"><span class="required">Cover letter</span>
+            <span class="hint">Address it to the hiring manager, Jordan Lee, at Example Company Inc.</span>
+          </label>
+          <textarea id="cover-letter" name="Cover letter" required maxlength="4000" data-counter></textarea>
+          <div class="counter"></div>
+          <span class="error">Please add a cover letter.</span>
+        </div>
+        <div class="full">
+          <label for="why">Why do you want to work here?
+            <span class="hint">Up to 500 characters</span>
+          </label>
+          <textarea id="why" name="Why do you want to work here?" maxlength="500" data-counter style="min-height: 100px"></textarea>
+          <div class="counter"></div>
+        </div>
+        <div class="full">
+          <label for="summary">Professional summary</label>
+          <textarea id="summary" name="Professional summary" style="min-height: 100px"></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Quick answers</legend>
+      <div class="grid">
+        <div>
+          <label for="heard">How did you hear about us?</label>
+          <input id="heard" name="How did you hear about us?" type="text" />
+        </div>
+        <div>
+          <label for="notice">Notice period</label>
+          <input id="notice" name="Notice period" type="text" placeholder="e.g. 2 weeks" />
+        </div>
+        <div>
+          <label for="experience">Years of experience
+            <span class="hint">Number</span>
+          </label>
+          <input id="experience" name="Years of experience" type="number" min="0" max="60" />
+          <span class="error">Enter a number between 0 and 60.</span>
+        </div>
+        <div>
+          <label for="pronouns">Pronouns (optional)</label>
+          <input id="pronouns" name="Pronouns" type="text" />
+        </div>
+        <div class="full">
+          <label for="authorization">Work authorization</label>
+          <input id="authorization" name="Work authorization" type="text"
+                 placeholder="e.g. Authorized to work in the US; no sponsorship required" />
+        </div>
+        <div class="full">
+          <span id="relocate-label" style="display:block;font-weight:600;font-size:0.9rem;margin-bottom:4px">Willing to relocate?</span>
+          <div class="radios" role="radiogroup" aria-labelledby="relocate-label">
+            <label><input type="radio" name="Willing to relocate?" value="Yes" /> Yes</label>
+            <label><input type="radio" name="Willing to relocate?" value="No" /> No</label>
+            <label><input type="radio" name="Willing to relocate?" value="Open to discussion" /> Open to discussion</label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="reset" class="secondary">Clear form</button>
+      <button type="submit" class="primary">Check answers</button>
+    </div>
+  </form>
+
+  <fieldset id="result" aria-live="polite">
+    <legend>Your answers</legend>
+    <p id="result-status"></p>
+    <table><tbody id="result-rows"></tbody></table>
+  </fieldset>
+</main>
+
+<script>
+  // Everything stays on this page: Submit only validates and lists the answers.
+  const form = document.getElementById('application')
+  const result = document.getElementById('result')
+  const resultStatus = document.getElementById('result-status')
+  const resultRows = document.getElementById('result-rows')
+
+  // The field's wrapper div, which shows the error message when it has the "invalid" class.
+  const wrapperOf = (input) => input.closest('.grid > div')
+
+  function checkField(input) {
+    const wrapper = wrapperOf(input)
+    if (!wrapper || input.type === 'radio') return true
+    const valid = input.checkValidity()
+    wrapper.classList.toggle('invalid', !valid)
+    return valid
+  }
+
+  function updateCounter(textarea) {
+    const counter = textarea.nextElementSibling
+    const words = textarea.value.trim() ? textarea.value.trim().split(/\s+/).length : 0
+    const max = textarea.maxLength > 0 ? ` / ${textarea.maxLength}` : ''
+    counter.textContent = `${words} words · ${textarea.value.length}${max} characters`
+    counter.classList.toggle('over', textarea.maxLength > 0 && textarea.value.length >= textarea.maxLength)
+  }
+
+  // Leftover placeholders mean the job details weren't filled in before copying.
+  function hasUnfilledPlaceholders(text) {
+    return /\{\{\s*\w+\s*\}\}/.test(text)
+  }
+
+  form.querySelectorAll('textarea[data-counter]').forEach((textarea) => {
+    updateCounter(textarea)
+    textarea.addEventListener('input', () => updateCounter(textarea))
+  })
+
+  // Check each field when the user leaves it or pastes into it.
+  form.querySelectorAll('input, select, textarea').forEach((input) => {
+    input.addEventListener('blur', () => checkField(input))
+    input.addEventListener('input', () => {
+      if (wrapperOf(input)?.classList.contains('invalid')) checkField(input)
+    })
+  })
+
+  form.addEventListener('reset', () => {
+    form.querySelectorAll('.invalid').forEach((wrapper) => wrapper.classList.remove('invalid'))
+    result.classList.remove('show')
+    setTimeout(() => form.querySelectorAll('textarea[data-counter]').forEach(updateCounter))
+  })
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault()
+    const inputs = [...form.querySelectorAll('input, select, textarea')]
+    const invalidCount = inputs.map(checkField).filter((valid) => !valid).length
+
+    resultRows.replaceChildren()
+    const data = new FormData(form)
+    for (const [name, value] of data.entries()) {
+      if (!String(value).trim()) continue
+      const row = resultRows.insertRow()
+      const header = document.createElement('th')
+      header.textContent = name
+      row.appendChild(header)
+      const cell = row.insertCell()
+      cell.textContent = value
+      if (hasUnfilledPlaceholders(String(value))) {
+        cell.textContent += '\n⚠ Contains an unfilled {{placeholder}}'
+      }
+    }
+
+    resultStatus.replaceChildren()
+    const badge = document.createElement('span')
+    badge.className = invalidCount ? 'badge bad' : 'badge ok'
+    badge.textContent = invalidCount
+      ? `${invalidCount} field${invalidCount === 1 ? '' : 's'} need${invalidCount === 1 ? 's' : ''} fixing (marked in red above).`
+      : 'Everything looks good. Nothing was sent; this page only checks the answers.'
+    resultStatus.appendChild(badge)
+
+    result.classList.add('show')
+    const firstInvalid = form.querySelector('.invalid input, .invalid textarea, .invalid select')
+    ;(firstInvalid ?? result).scrollIntoView({ behavior: 'smooth', block: 'center' })
+    firstInvalid?.focus({ preventScroll: true })
+  })
+</script>
+</body>
+</html>

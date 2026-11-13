@@ -31,7 +31,7 @@ The panel opens on Use once you've filled in at least one field. Until then it o
 - **Quick answers**: how you heard about the job, work authorization, notice period, and similar questions.
 - Click a value to copy it. Expand (˅) to see every format, and star a format to make it that field's default.
 - Add, edit and delete fields, search them, and use a dark theme. You can export and import a JSON backup.
-- Data is saved in `chrome.storage.local` and stays on your machine. If the panel is open in more than one Chrome window, a change in one shows up in the others straight away.
+- Data is saved in `chrome.storage.local` and stays on your machine. If the panel is open in more than one Chrome window, a change in one shows up in the others straight away. See the [privacy policy](PRIVACY.md).
 
 ## Build and install
 
@@ -47,6 +47,14 @@ npm run build
 Use `npm run watch` to rebuild on every change, then click the reload button for the extension on `chrome://extensions`.
 
 `npm run dev` serves the panel at `http://localhost:5173/sidepanel.html` for UI work. Outside the extension it saves to `localStorage`.
+
+## Practice form
+
+`examples/job-application.html` is a sample job application to try the panel on. It is a single file with no dependencies, so open it straight in Chrome; no server or build is needed.
+
+- Some fields ask for a specific format, such as `(555) 555-5555`, E.164, a whole-number salary, `MM/DD/YYYY`, `MM/YYYY` and `Month D, YYYY`, so you can practise choosing a format.
+- Fields are checked when you leave them, and a field in the wrong format turns red.
+- **Check answers** lists everything you entered and flags any `{{placeholder}}` left in the text. Nothing is sent anywhere.
 
 ## Layout
 
